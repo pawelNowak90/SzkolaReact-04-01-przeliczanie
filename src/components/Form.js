@@ -1,10 +1,17 @@
 import React, {useState} from 'react';
 
+import Bill from './Bill.js';
+
 const Form = () => {
+    const VAT = 0.23;
+    const [showBill, setShowBill]=useState(true);
     const [priceToPay, setPriceToPay] = useState(0);
     const [waiterTip, setWaiterTip]=useState(0.05);
+    const [toPay, setToPay]=useState(0);
+
     const submitHandler = (e) => {
         e.preventDefault();
+        setShowBill(!showBill);
     }
     const priceToPayHandler = (e) => {
         setPriceToPay(parseFloat(e.target.value));
@@ -13,11 +20,12 @@ const Form = () => {
         setWaiterTip(parseFloat(e.target.value));
     }
     const calculateBill = () => {
-        let toPay =  priceToPay+priceToPay*waiterTip;
-        console.log(`Do zapłaty:`,toPay.toFixed(2));
+        setToPay(priceToPay+priceToPay*VAT+priceToPay*waiterTip);
     }
+
     return (
-            <form onSubmit={submitHandler} action="">
+        <>
+           {showBill ? <form onSubmit={submitHandler} action="">
                 <input onChange={priceToPayHandler} type="number" step="0.01"/>
                 <select onChange={setTipValueHandler}>
                     <option value={0.05}>5%</option>
@@ -27,6 +35,8 @@ const Form = () => {
                 </select>
                 <button type="submit" onClick={calculateBill}>Przelicz</button>
             </form>
+            : <Bill toPay={toPay}/>}
+        </>
      );
 }
 
